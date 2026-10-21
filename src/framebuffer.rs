@@ -55,7 +55,9 @@ impl Framebuffer {
 
         let mut texture = creator
             .create_texture_streaming(
-                PixelFormatEnum::RGBA8888,
+                // El framebuffer guarda los bytes en orden R, G, B, A.
+                // ABGR8888 usa ese orden en memoria en Windows little-endian.
+                PixelFormatEnum::ABGR8888,
                 self.width as u32,
                 self.height as u32,
             )
