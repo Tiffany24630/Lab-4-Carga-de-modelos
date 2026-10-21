@@ -1,0 +1,8 @@
+[package]
+name = "obj_renderer_rust"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sdl2 = "0.37"
+image = "0.25"
