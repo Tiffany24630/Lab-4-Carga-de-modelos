@@ -8,6 +8,7 @@ pub struct Framebuffer {
     pub width: usize,
     pub height: usize,
     pub pixels: Vec<u8>,
+    depth: Vec<f32>,
 }
 
 impl Framebuffer {
@@ -16,6 +17,7 @@ impl Framebuffer {
             width,
             height,
             pixels: vec![0; width * height * 4],
+            depth: vec![f32::INFINITY; width * height],
         }
     }
 
@@ -26,14 +28,22 @@ impl Framebuffer {
             pixel[2] = color.b;
             pixel[3] = color.a;
         }
+
+        self.depth.fill(f32::INFINITY);
     }
 
-    pub fn set_pixel(&mut self, x: i32, y: i32, color: Color) {
+    pub fn set_pixel(&mut self, x: i32, y: i32, depth: f32, color: Color) {
         if x < 0 || y < 0 || x >= self.width as i32 || y >= self.height as i32 {
             return;
         }
 
-        let index = ((y as usize) * self.width + x as usize) * 4;
+        let pixel = (y as usize) * self.width + x as usize;
+        if depth >= self.depth[pixel] {
+            return;
+        }
+
+        self.depth[pixel] = depth;
+        let index = pixel * 4;
         self.pixels[index] = color.r;
         self.pixels[index + 1] = color.g;
         self.pixels[index + 2] = color.b;

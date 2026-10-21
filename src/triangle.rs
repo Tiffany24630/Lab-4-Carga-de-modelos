@@ -4,6 +4,7 @@ use crate::{color::Color, framebuffer::Framebuffer};
 pub struct Point {
     pub x: i32,
     pub y: i32,
+    pub z: f32,
 }
 
 pub fn triangle(
@@ -26,7 +27,7 @@ pub fn triangle(
 
     for y in min_y..=max_y {
         for x in min_x..=max_x {
-            let p = Point { x, y };
+            let p = Point { x, y, z: 0.0 };
 
             let w0 = edge(p1, p2, p);
             let w1 = edge(p2, p0, p);
@@ -35,7 +36,9 @@ pub fn triangle(
             if (w0 >= 0 && w1 >= 0 && w2 >= 0)
                 || (w0 <= 0 && w1 <= 0 && w2 <= 0)
             {
-                framebuffer.set_pixel(x, y, color);
+                let depth = (w0 as f32 * p0.z + w1 as f32 * p1.z + w2 as f32 * p2.z)
+                    / area as f32;
+                framebuffer.set_pixel(x, y, depth, color);
             }
         }
     }
